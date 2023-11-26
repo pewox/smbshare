@@ -17,7 +17,6 @@ $share_obj = ($shares | get-smbshareaccess | sort Name).Where({$_.AccessControlT
     $i++
 }
 
-
 $j = 0
 $ntfs_obj = foreach($share in $shares){($share | Get-Acl | sort Path).Access.where({$_.IdentityReference -notin $exclude -and $_.IdentityReference -notlike 'S-*-*-*-*'}).foreach{
     [PSCustomObject]@{
@@ -30,11 +29,11 @@ $ntfs_obj = foreach($share in $shares){($share | Get-Acl | sort Path).Access.whe
         $j++
     }
 } 
-$full_share = $share_obj.Where({$_.account -in $jeder -and $_.Access_Right -in $full })
+
+$full_share = $share_obj.Where({$_.account -in $jeder -and $_.Access_Right -in $full }).id
+$f_arr = foreach($val in $full_share){
+    $val.id
+}
+$full_share
 $read_share = $share_obj.Where({$_.account -in $jeder -and $_.Access_Right -in $read })
 $write_share = $share_obj.Where({$_.account -in $jeder -and $_.Access_Right -in $write })
-#$read_share | Format-Table
-#$write_share
-#$full_share
-$ntfs_obj | Format-Table
-$share_obj | Format-Table
