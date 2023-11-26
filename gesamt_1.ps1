@@ -4,8 +4,9 @@ $read = '-1610612736', 'ReadAndExecute', 'Read'
 $exclude = 'VORDEFINIERT\Administratoren', 'VORDEFINIERT\Benutzer', 'NT-AUTORITÄT\SYSTEM', 'NT-AUTORITÄT\Authentifizierte Benutzer', 'NT SERVICE\TrustedInstaller'
 $jeder = 'Jeder', 'everyone'
 
+$shares = Get-SmbShare -Special $false
 $i = 0
-$share_obj = (Get-SmbShare -Special $false | get-smbshareaccess | sort Name).Where({$_.AccessControlType -eq 'Allow' -and $_.AccountName -notin $exclude}).ForEach{
+$share_obj = ($shares | get-smbshareaccess | sort Name).Where({$_.AccessControlType -eq 'Allow' -and $_.AccountName -notin $exclude}).ForEach{
     [PSCustomObject]@{
         Computer = $env:COMPUTERNAME
         Share = $_.Name
@@ -16,7 +17,7 @@ $share_obj = (Get-SmbShare -Special $false | get-smbshareaccess | sort Name).Whe
     $i++
 }
 
-$shares = Get-SmbShare -Special $false
+
 $j = 0
 $ntfs_obj = foreach($share in $shares){($share | Get-Acl | sort Path).Access.where({$_.IdentityReference -notin $exclude -and $_.IdentityReference -notlike 'S-*-*-*-*'}).foreach{
     [PSCustomObject]@{
@@ -32,6 +33,8 @@ $ntfs_obj = foreach($share in $shares){($share | Get-Acl | sort Path).Access.whe
 $full_share = $share_obj.Where({$_.account -in $jeder -and $_.Access_Right -in $full })
 $read_share = $share_obj.Where({$_.account -in $jeder -and $_.Access_Right -in $read })
 $write_share = $share_obj.Where({$_.account -in $jeder -and $_.Access_Right -in $write })
-$read_share | Format-Table
+#$read_share | Format-Table
 #$write_share
 #$full_share
+$ntfs_obj | Format-Table
+$share_obj | Format-Table
