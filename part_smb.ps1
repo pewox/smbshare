@@ -1,17 +1,16 @@
 $write = '-536805376', 'modify', 'Write', 'Change'
 $full = '268435456', 'FullControl', 'Full'
 $read = '-1610612736', 'ReadAndExecute', 'Read'
-$exclude = 'VORDEFINIERT\Administratoren', 'VORDEFINIERT\Benutzer', 'NT-AUTORITÄT\SYSTEM', 'NT-AUTORITÄT\Authentifizierte Benutzer', 'NT SERVICE\TrustedInstaller'
+$exclude = 'VORDEFINIERT\Administratoren', 'VORDEFINIERT\Benutzer', 'NT-AUTORITÄT\SYSTEM', 'NT-AUTORITÄT\Authentifizierte Benutzer', 'NT SERVICE\TrustedInstaller', 'Users'
 
-$i = 0
-$share_obj = (Get-SmbShare -Special $false | get-smbshareaccess | Sort-Object Name).Where({$_.AccessControlType -eq 'Allow' -and $_.AccountName -notin $exclude}).ForEach{
-        [PSCustomObject]@{
-            computer = $env:COMPUTERNAME
-            share = $_.Name
-            account = $_.AccountName
-            right = $_.AccessRight
-            id = 's_'+$i
-        }
-        $i++
+$shares = (Get-SmbShare -Special $false).where({$_.Name -notin $exclude})
+$share_obj = ($shares | get-smbshareaccess).Where({$_.AccessControlType -eq 'Allow' -and $_.AccountName -notin $exclude}).ForEach{
+    [PSCustomObject]@{
+        Computer = $env:COMPUTERNAME
+        Share = $_.Name
+        Account = $_.AccountName
+        Access_Right = $_.AccessRight
+        id = $_.Name + ':' + $_.AccountName
     }
+}
 $share_obj | Format-Table
