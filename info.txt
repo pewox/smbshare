@@ -20,3 +20,9 @@ System, NT Service, ... Trusted InstallerGet
 
 Status Code auf CRIT, wenn Jeder mit Full oder Write berechtigt ist,
 Status Code auf WARN, wenn Jeder/Benutzer/Gast lesend berechtigt ist.
+
+
+
+
+Checkmk
+https://github.com/Yogibaer75 
