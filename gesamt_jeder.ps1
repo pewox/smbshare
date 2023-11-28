@@ -28,14 +28,21 @@ $ntfs_obj = foreach($share in $shares){($share | Get-Acl).Access.where({$_.Ident
         }
     }
 } 
-'NTFS_alle: ', $ntfs_obj | Format-Table
 $full_share = $share_obj.Where({$_.Access_Right -in $full })
-$write_share = $share_obj.Where({$_.Access_Right -in $change})
+$change_share = $share_obj.Where({$_.Access_Right -in $change})
 $read_share = $share_obj.Where({$_.Access_Right -in $read })
-'NTFS_full: ', $full_share | Format-Table
+
 foreach($val in $ntfs_obj){
     if($val.id -in $full_share.id){
         Add-Content -Path $path -Value ('status=2 {0}' -f $val.id)
-        $val | Format-Table
-    } #else {'NO'}
+        'FULL', $val.id | Format-Table
+    } 
+    if($val.id -in $change_share.id){
+        Add-Content -Path $path -Value ('status=2 {0}' -f $val.id)
+        'Change', $val.id | Format-Table
+    }
+    if($val.id -in $read_share.id){
+        Add-Content -Path $path -Value ('status=2 {0}' -f $val.id)
+        'Read', $val.id | Format-Table
+    }
 }
