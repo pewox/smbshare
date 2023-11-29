@@ -2,7 +2,7 @@ $change = '-536805376', 'modify', 'Write', 'Change'
 $full = '268435456', 'FullControl', 'Full'
 $read = '-1610612736', 'ReadAndExecute', 'Read'
 
-
+$filesystemrights = 'read', 'write'
 $prior = @()
 foreach($val in $filesystemrights){
     if ($val -in $full){
