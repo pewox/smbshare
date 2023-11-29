@@ -39,11 +39,17 @@ foreach($val in $ntfs_obj){
     if($val.id -in $full_share.id -and ($val.NTFS_Right -notlike '*Read*' -or $val.NTFS_Right -notlike '*modify*' -or $val.NTFS_Right -notlike '*Write*' -or $val.NTFS_Right -notlike '*Change*')){
         Add-Content -Path $path -Value ('2 "{1}:Share={2}" {0}' -f $val.id, $env:COMPUTERNAME, $val.Share)
     } 
-    if($val.id -in $change_share.id -and ($val.NTFS_Right -notlike '*Read*')){
+    elseif($val.id -in $change_share.id -and ($val.NTFS_Right -notlike '*Read*')){
         Add-Content -Path $path -Value ('2 "{1}:Share={2}" {0}' -f $val.id, $env:COMPUTERNAME, $val.Share)
     }
-    if($val.id -in $read_share.id){
+    elseif($val.id -in $read_share.id){
         Add-Content -Path $path -Value ('1 "{1}:Share={2}" {0}' -f $val.id, $env:COMPUTERNAME, $val.Share)
+    }
+    elseif($null -eq $val.id){
+        Add-Content -Path $path -Value ('3 "{1}:Share={2}" {0}' -f $val.id, $env:COMPUTERNAME, $val.Share)
+    } 
+    elseif($share_obj.Account -notin $jeder ){
+        Add-Content -Path $path -Value ('0 "{1}:Share={2}" {0}' -f $val.id, $env:COMPUTERNAME, $val.Share)
     }
 }
 
