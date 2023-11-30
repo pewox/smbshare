@@ -51,7 +51,7 @@ foreach($val in $ntfs_obj){
     if($val.id -in $full_share_j.id -and ($val.NTFS_Right -like '*Full*')){
         Add-Content -Path $path -Value ('2 "{1}:Share={2}" {0} {3}' -f $val.id, $env:COMPUTERNAME, $val.Share, $val.NTFS_Right)
     } 
-    elseif ($val.id -in $change_share_j.id -or $val.id -in $read_share_j.id -and $val.NTFS_Right -notlike '*Full*') 
+    elseif ($val.id -in $change_share_j.id -or $val.id -in $read_share_j.id -or $val.id -in $full_share_j.id -and $val.NTFS_Right -notlike '*Full*') 
     {Add-Content -Path $path -Value ('0 "{1}:Share={2}" {0} {3}' -f $val.id, $env:COMPUTERNAME, $val.Share, $val.NTFS_Right)}
 }
 $ntfs_obj | Format-Table
