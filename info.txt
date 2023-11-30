@@ -28,3 +28,6 @@ Checkmk
 https://github.com/Yogibaer75 
 
 https://code.visualstudio.com/docs/sourcecontrol/github
+
+
+$env:USERDOMAIN
