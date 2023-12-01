@@ -28,7 +28,7 @@ foreach($server in $winserver){
     # Objekt für NTFS-Berechtigungen anlegen; ID aus Sharename und Benutzerkontoname für Vergleiche bilden
     $ntfs_obj = foreach($share in $shares){
         $share_path = $share.Path
-        (Invoke-Command -ComputerName $server -ScriptBlock{Get-Acl -Path $using:share_path}).Access.where({$_.IdentityReference -notin $exclude -and $_.IdentityReference -in $alle}).foreach{
+        # Fehler !!!(Invoke-Command -ComputerName $server -ScriptBlock{Get-Acl -Path $using:share_path}).Access.where({$_.IdentityReference -notin $exclude -and $_.IdentityReference -in $alle}).foreach{
         $t2 = if($_.IdentityReference -eq 'Everyone'){'Jeder'}
         elseif($_.IdentityReference -eq $($env:USERDOMAIN + '\Users')){$($env:USERDOMAIN + '\Benutzer')}
         elseif($_.IdentityReference -eq $($env:USERDOMAIN + '\guest')) {$($env:USERDOMAIN + '\gast')}
