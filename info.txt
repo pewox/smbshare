@@ -31,3 +31,5 @@ https://code.visualstudio.com/docs/sourcecontrol/github
 
 
 $env:USERDOMAIN
+
+https://learn.microsoft.com/de-de/windows-server/identity/ad-ds/manage/understand-security-groups
