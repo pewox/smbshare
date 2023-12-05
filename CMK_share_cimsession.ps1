@@ -1,39 +1,4 @@
-$change = '-536805376', 'modify', 'Write', 'Change'
-$full = '268435456', 'FullControl', 'Full'
-$read = '-1610612736', 'ReadAndExecute', 'Read'
-$exclude = 'VORDEFINIERT\Administratoren', 'NT-AUTORITÄT\SYSTEM', 'NT-AUTORITÄT\Authentifizierte Benutzer', 'NT SERVICE\TrustedInstaller', 'ERSTELLER-BESITZER',
-'NT AUTHORITY\SYSTEM', 'BUILTIN\Administrators', 'CREATOR OWNER'
-$alle = 'Jeder', 'Everyone', $($env:USERDOMAIN + '\Users'), $($env:USERDOMAIN + '\Benutzer'), $($env:USERDOMAIN + '\gast'), $($env:USERDOMAIN + '\guest') , 'VORDEFINIERT\Benutzer', 'BUILTIN\Users'
 
-$path = '.\out.txt'  # Ausgabedatei
-New-Item -Path $path -Force | Out-Null
-$winserver = (Get-ADComputer -Filter {OperatingSystem -like '*Windows Server*' -and Enabled -eq 'True'}).Name # alle Windows Server auslesen
-
-foreach($server in $winserver){
-    $shares = (Get-SmbShare -CimSession $server -Special $false).where({$_.Name -notin $exclude})
-    # Objekt für Freigabeberechtigungen anlegen; ID aus Sharename und Benutzerkontoname für Vergleiche bilden
-    $share_obj = ($shares | get-smbshareaccess -CimSession $server).Where({$_.AccessControlType -eq 'Allow' -and $_.AccountName -in $alle -and $_.AccountName -notin $exclude}).ForEach{
-            $t1 = if($_.AccountName -eq 'Everyone'){'Jeder'}
-            elseif($_.AccountName -eq $($env:USERDOMAIN + '\Users')){$($env:USERDOMAIN + '\Benutzer')}
-            elseif ($_.AccountName -eq $($env:USERDOMAIN + '\guest')) {$($env:USERDOMAIN + '\gast')}
-            else{$_.AccountName}
-            [PSCustomObject]@{
-            Server = $server
-            Share = $_.Name
-            Account = $t1
-            Share_Right = $_.AccessRight
-            ID = $_.Name + ':' + $t1
-        }
-    }
-    # Objekt für NTFS-Berechtigungen anlegen; ID aus Sharename und Benutzerkontoname für Vergleiche bilden
-    $ntfs_obj = foreach($share in $shares){
-        $share_path = $share.Path
-        # Fehler !!!(Invoke-Command -ComputerName $server -ScriptBlock{Get-Acl -Path $using:share_path}).Access.where({$_.IdentityReference -notin $exclude -and $_.IdentityReference -in $alle}).foreach{
-        $t2 = if($_.IdentityReference -eq 'Everyone'){'Jeder'}
-        elseif($_.IdentityReference -eq $($env:USERDOMAIN + '\Users')){$($env:USERDOMAIN + '\Benutzer')}
-        elseif($_.IdentityReference -eq $($env:USERDOMAIN + '\guest')) {$($env:USERDOMAIN + '\gast')}
-        else{$_.IdentityReference}
-        [PSCustomObject]@{
         Server = $server
         Share = $share.Name
         Account = $t2
