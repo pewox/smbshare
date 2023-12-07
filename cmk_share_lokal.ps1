@@ -1,11 +1,9 @@
-
+$path = '.\out.txt'
+New-Item -Path $path -Force | Out-Null
 $exclude = 'VORDEFINIERT\Administratoren', 'NT-AUTORITÄT\SYSTEM', 'NT-AUTORITÄT\Authentifizierte Benutzer', 'NT SERVICE\TrustedInstaller', 'ERSTELLER-BESITZER',
 'NT AUTHORITY\SYSTEM', 'BUILTIN\Administrators', 'CREATOR OWNER'
 $include = 'Jeder', 'Everyone', 'VORDEFINIERT\Benutzer', 'BUILTIN\Users','VORDEFINIERT\Users', $($env:USERDOMAIN + '\gast'), $($env:USERDOMAIN + '\guest')
 $benutzer = 'VORDEFINIERT\Benutzer', 'BUILTIN\Users', 'VORDEFINIERT\Users'
-
-$path = '.\out.txt'
-New-Item -Path $path -Force | Out-Null
 
 $shares = (Get-SmbShare -Special $false).where({$_.Name -notin $exclude})
 # Objekt für alle Freigabeberechtigungen anlegen; ID aus Sharename und Benutzerkontoname für Vergleiche bilden
