@@ -5,7 +5,7 @@ $exclude = 'VORDEFINIERT\Administratoren', 'NT-AUTORITÄT\SYSTEM', 'NT-AUTORITÄ
 $include = 'Jeder', 'Everyone', 'VORDEFINIERT\Benutzer', 'BUILTIN\Users','VORDEFINIERT\Users', $($env:USERDOMAIN + '\gast'), $($env:USERDOMAIN + '\guest')
 $benutzer = 'VORDEFINIERT\Benutzer', 'BUILTIN\Users', 'VORDEFINIERT\Users'
 
-$shares = (Get-SmbShare -Special $false).where({$_.Name -notin $exclude})
+$shares = (Get-SmbShare -Special $false).where({$_.Name -in $include -and $_.Name -notmatch '[DF][3]' -and $_.Name -ne 'print$'})
 # Objekt für alle Freigabeberechtigungen anlegen; ID aus Sharename und Benutzerkontoname für Vergleiche bilden
 $share_obj = ($shares | get-smbshareaccess).Where({$_.AccessControlType -eq 'Allow' -and $_.AccountName -in $include}).ForEach{
     $t1 = if($_.AccountName -eq 'Everyone'){'Jeder'}
