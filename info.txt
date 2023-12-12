@@ -1,26 +1,4 @@
-string für checkmk:
-
-0 "My service" myvalue=73 My output text which may contain spaces
-
-Ziel:
-
-Pro Share (inkl. administrative Shares) eine Zeile CMK-Output in folgendem Format:
-
-<StatusCode> "SMBShare <NAME>" - <Liste>
-
-
-<StatusCode> = 0 = OK, 1 = WARN, 2 = CRIT, 3 = UNKNOWN
-<NAME> = Share-Freigabe-Name
-<Liste> = bestehend aus   USER1/Gruppe1 (Freigabe-Berechtigungen: xy   ; NTFS-Berechtigungen: yz ), USER2/Gruppe2 (..), ...
-
-
-Was gilt zu filtern:
-System, NT Service, ... Trusted InstallerGet
-
-
-Status Code auf CRIT, wenn Jeder mit Full oder Write berechtigt ist,
-Status Code auf WARN, wenn Jeder/Benutzer/Gast lesend berechtigt ist.
-
+https://learn.microsoft.com/en-us/powershell/module/scheduledtasks/new-scheduledtasktrigger?view=windowsserver2022-ps
 
 
 
